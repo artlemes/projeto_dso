@@ -1,0 +1,5 @@
+from controlador_sistema import ControladorSistema
+from controlador_bebida import ControladorBebida
+from controlador_conta import ControladorConta
+from controlador_produto import ControladorProduto
+from controlador_prato import ControladorPrato
