@@ -15,22 +15,21 @@ class ControladorPrato():
     def inclui_prato(self) -> bool:
         prato_dados, botao = self.tela_prato.pega_dados_prato()
 
-        certo = self.testador_variaveis(prato_dados)
+        certo, prato_dados_tratados = self.testador_variaveis(prato_dados)
 
         #caso a pessoa clique em cancelar
         if botao == 'Cancelar':
             return None
 
         if not certo:
-            self.tela_prato.mostra_msg('Não foi possivel cadastrar este prato:')
-            self.tela_prato.mostra_msg('parâmetros inválidos')
+            self.tela_prato.mostra_msg('Não foi possivel cadastrar este prato: parâmetros inválidos')
         else:
             duplicado = False
 
-            novo = Prato(prato_dados["nome"], 
-                         prato_dados["preco"], 
-                         prato_dados["despesa"], 
-                         prato_dados["codigo"])
+            novo = Prato(prato_dados_tratados["nome"], 
+                         prato_dados_tratados["preco"], 
+                         prato_dados_tratados["despesa"], 
+                         prato_dados_tratados["codigo"])
             
             print("objeto criado")
 
@@ -66,23 +65,20 @@ class ControladorPrato():
             return False
 
         #captação de dados
-        dados_alterados = self.tela_prato.pega_dados_prato()
+        dados_alterados, botao = self.tela_prato.altera_dados_prato()
 
-        #booleano de captação bem sucedida
-        certo = self.testador_variaveis(dados_alterados)
+        if botao == 'Cancelar':
+            return None
+        
+        certo, dados_alterados_tratados = self.testador_variaveis(dados_alterados)
 
-        #to fazendo o update do arquivo sem levar o codigo junto
         if certo:
-            prato.nome = dados_alterados["nome"]
-            prato.preco = dados_alterados["preco"]
-            prato.despesa = dados_alterados["despesa"]
-
+            prato.nome = dados_alterados_tratados["nome"]
+            prato.preco = dados_alterados_tratados["preco"]
+            prato.despesa = dados_alterados_tratados["despesa"]
             self.__prato_DAO.update(prato)
-
         else:
-            self.tela_prato.mostra_msg("Não foi possível alterar este prato")
-            self.tela_prato.mostra_msg("erro na captação de dados")
-            return False
+            self.tela_prato.mostra_msg('Erro na captação de dados, não foi possível alterar')
 
     #status: funcionando
     def exclui_prato(self):
@@ -174,12 +170,25 @@ class ControladorPrato():
 
     
     def testador_variaveis(self, prato_dados) -> bool:
-        try:
-            prato_dados_checados = {"nome":str(prato_dados["nome"]),
-                                    "preco": float(prato_dados["preco"]),
-                                    "despesa":float(prato_dados["despesa"]),
-                                    "codigo":int(prato_dados["codigo"])}
-            return True
+        print(len(prato_dados))
+        if len(prato_dados) == 4:
+
+            try:
+                prato_dados_checados = {"nome":str(prato_dados["nome"]),
+                                        "preco": float(prato_dados["preco"]),
+                                        "despesa":float(prato_dados["despesa"]),
+                                        "codigo":int(prato_dados["codigo"])}
+                return True, prato_dados_checados
         
-        except:
-            return False
+            except:
+                return False, None
+            
+        else:
+            try:
+                prato_dados_checados = {"nome":str(prato_dados["nome"]),
+                                        "preco": float(prato_dados["preco"]),
+                                        "despesa":float(prato_dados["despesa"])}
+                return True, prato_dados_checados
+        
+            except:
+                return False, None

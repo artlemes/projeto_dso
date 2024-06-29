@@ -67,8 +67,29 @@ class TelaPrato():
 
         self.close()
 
-        return {'nome':str(nome), 'preco':float(preco),
-                'despesa':float(despesa), 'codigo':int(codigo)}, button
+        return {'nome':nome, 'preco':preco,
+                'despesa':despesa, 'codigo':codigo}, button
+    
+    def altera_dados_prato(self):
+        sg.ChangeLookAndFeel('DarkTeal4')
+        layout = [
+            [sg.Text('-------- DADOS PRATO ----------', font=("Helvica", 25))],
+            [sg.Text('Nome:', size=(15, 1)), sg.InputText('', key='nome')],
+            [sg.Text('Despesas:', size=(15, 1)), sg.InputText('', key='despesa')],
+            [sg.Text('Preço:', size=(15, 1)), sg.InputText('', key='preco')],
+            [sg.Button('Confirmar'), sg.Cancel('Cancelar')]
+        ]
+        self.__window = sg.Window('Sistema de pratos').Layout(layout)
+
+        button, values = self.open()
+        nome = values['nome']
+        preco = values['preco']
+        despesa = values['despesa']
+
+        self.close()
+
+        return {'nome':nome, 'preco':preco,
+                'despesa':despesa}, button
    
    #testar
     def seleciona_prato(self):

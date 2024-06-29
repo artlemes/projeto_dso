@@ -55,7 +55,7 @@ class TelaBebida():
             [sg.Text('Código:', size=(15, 1)), sg.InputText('', key='cod')],
             [sg.Button('Confirmar'), sg.Cancel('Cancelar')]
         ]
-        self.__window = sg.Window('Sistema de pratos').Layout(layout)
+        self.__window = sg.Window('Sistema de bebidas').Layout(layout)
 
         button, values = self.open()
         nome = values['nome']
@@ -65,8 +65,29 @@ class TelaBebida():
 
         self.close()
 
-        return {'nome':nome, 'preco':preco,
-                'despesa':despesa, 'codigo':codigo}, button
+        return {'nome':str(nome), 'preco':float(preco),
+                'despesa':float(despesa), 'codigo':int(codigo)}, button
+    
+    def altera_dados_bebida(self):
+        sg.ChangeLookAndFeel('DarkTeal4')
+        layout = [
+            [sg.Text('-------- ALTERA DADOS BEBIDA ----------', font=("Helvica", 25))],
+            [sg.Text('Nome:', size=(15, 1)), sg.InputText('', key='nome')],
+            [sg.Text('Despesas:', size=(15, 1)), sg.InputText('', key='despesa')],
+            [sg.Text('Preço:', size=(15, 1)), sg.InputText('', key='preco')],
+            [sg.Button('Confirmar'), sg.Cancel('Cancelar')]
+        ]
+        self.__window = sg.Window('Sistema de bebidas').Layout(layout)
+
+        button, values = self.open()
+        nome = values['nome']
+        preco = values['preco']
+        despesa = values['despesa']
+
+        self.close()
+
+        return {'nome':str(nome), 'preco':float(preco),
+                'despesa':float(despesa)}, button
    
     def seleciona_bebida(self):
         sg.ChangeLookAndFeel('DarkTeal4')

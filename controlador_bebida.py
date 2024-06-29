@@ -63,22 +63,27 @@ class ControladorBebida():
             return False
 
         #captação de dados
-        dados_alterados = self.tela_bebida.pega_dados_bebida()
+        dados_alterados, botao = self.tela_bebida.altera_dados_bebida()
 
-        #booleano de captação bem sucedida
-        certo = self.testador_variaveis(dados_alterados)
+        print('conseguiu pegar os dados')
+        print(dados_alterados, botao)
 
-        if certo:
-            bebida.nome = dados_alterados["nome"]
-            bebida.preco = dados_alterados["preco"]
-            bebida.despesa = dados_alterados["despesa"]
-            bebida.codigo = dados_alterados["codigo"]
-            return True  
+        if botao == 'Cancelar':
+            print('o botao foi cancelar')
+            return None
+        
+        print('testou o botao')
+        print(dados_alterados)
 
-        else:
-            self.tela_bebida.mostra_msg("Não foi possível alterar esta bebida")
-            self.tela_bebida.mostra_msg("erro na captação de dados")
-            return False
+        bebida.nome = dados_alterados["nome"]
+        print('alterou o nome')
+        bebida.preco = dados_alterados["preco"]
+        print("Alterou o preco")
+        bebida.despesa = dados_alterados["despesa"]
+        print("Alterou o preco")
+        bebida.codigo = bebida.codigo
+        print('Alterou os dados')
+        return True  
 
     #status: funcionando
     def exclui_bebida(self):
