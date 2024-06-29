@@ -1,10 +1,11 @@
 from contato import Contato
 from tela_contato import TelaContato
+from DAOs.contato_dao import ContatoDAO
 
 class ControladorContato():
     def __init__(self):
         self.__tela_contato = TelaContato()
-        self.__contatos = []
+        self.__contato_DAO = ContatoDAO()
 
     @property
     def contatos(self):
@@ -27,7 +28,7 @@ class ControladorContato():
         #essa pode ser uma das nossas exceções criadas
         if botao == 'Cancelar':
             return None
-
+        
         certo = self.testador_variaveis(contato_dados)
 
 
@@ -40,12 +41,12 @@ class ControladorContato():
 
             novo = Contato(contato_dados["celular"], contato_dados['email'])
 
-            for contato in self.contatos:
+            for contato in self.__contato_DAO.get_all():
                 if contato.celular == novo.celular:
                     duplicado = True
             
             if not duplicado:
-                self.contatos.append(novo)
+                self.__contato_DAO.add(novo)
                 self.tela_contato.mostra_msg('Contato incluido com sucesso')
             
             else:
@@ -61,20 +62,26 @@ class ControladorContato():
         #testando se o botao foi cancelar
         if isinstance(contato, str):
             return None
-
+        
         #checagem de contato nulo
         if contato == None:
             self.tela_contato.mostra_msg("Não foi possível alterar este contato, ele não existe")
 
         #captação de dados
-        dados_alterados = self.tela_contato.pega_dados_contato()
+        dados_alterados, botao = self.tela_contato.pega_dados_contato()
+
+        if botao == 'Cancelar':
+            return None
 
         #booleano de captação bem sucedida
         certo = self.testador_variaveis(dados_alterados)
+        print(certo)
 
         if certo:
-            contato.celular = dados_alterados["celular"]
-            contato.email = dados_alterados["email"]
+            contato.celular = dados_alterados['celular']
+            contato.email = dados_alterados['email']
+            print('dados mudaram, erro no dao')
+            self.__contato_DAO.update(contato)
             self.tela_contato.mostra_msg('Contato alterado com sucesso')
 
         else:
@@ -89,15 +96,15 @@ class ControladorContato():
         if isinstance(contato, str):
             return None
 
-        if contato in self.contatos:
-            self.contatos.remove(contato)
+        if contato in self.__contato_DAO.get_all():
+            self.__contato_DAO.remove(str(contato.celular))
             self.tela_contato.mostra_msg('contato excluído')
         else:
             self.tela_contato.mostra_msg("Atenção: contato inexistente")
 
     #status: feito, testar
     def lista_contato(self):
-        for contato in self.contatos:
+        for contato in self.__contato_DAO.get_all():
             self.tela_contato.mostra_contato({"celular": contato.celular, "email": contato.email})
 
     #status: feita, testar
@@ -129,23 +136,26 @@ class ControladorContato():
         if botao == 'Cancelar':
             print('o botao foi cancelar')
             return botao
-        
-        achado = None
 
-        for contato in self.contatos:
-            if contato.celular == num:
-                achado = contato
+        for contato in self.__contato_DAO.get_all():
+            if str(contato.celular) == str(num):
+                return contato
 
-        if achado == None:
-            self.tela_contato.mostra_msg('Numero nao reconhecido')
+        self.tela_contato.mostra_msg('Numero nao reconhecido')
     
-        return achado
+        return False
 
     
     def testador_variaveis(self, contato_dados) -> dict:
         try:
-            contato_dados_checados = {"celular":str(contato_dados["celular"]), 'email':str(contato_dados['email'])}
+            int(contato_dados['celular'])
+            print('funcionou')
+
+            if contato_dados['email'] == '':
+                return False
+            
             return True
-        
         except:
-            return False
+            print('erro')
+
+        return False

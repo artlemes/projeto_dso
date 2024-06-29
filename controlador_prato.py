@@ -15,11 +15,12 @@ class ControladorPrato():
     def inclui_prato(self) -> bool:
         prato_dados, botao = self.tela_prato.pega_dados_prato()
 
-        certo, prato_dados_tratados = self.testador_variaveis(prato_dados)
-
         #caso a pessoa clique em cancelar
         if botao == 'Cancelar':
             return None
+
+        certo, prato_dados_tratados = self.testador_variaveis(prato_dados)
+
 
         if not certo:
             self.tela_prato.mostra_msg('Não foi possivel cadastrar este prato: parâmetros inválidos')

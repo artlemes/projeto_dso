@@ -65,7 +65,7 @@ class TelaContato():
 
         self.close()
 
-        return {'celular':str(celular), 'email':str(email)}, button
+        return {'celular':celular, 'email':email}, button
    
    
     def seleciona_contato(self):

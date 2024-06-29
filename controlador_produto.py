@@ -17,14 +17,6 @@ class ControladorProduto():
     @property
     def controlador_pratos(self):
         return self.__controlador_pratos
-    
-    def produtos(self) -> list:
-        produtos = []
-        for bebida in self.controlador_bebidas.bebidas:
-            produtos.append(bebida)
-        for prato in self.controlador_pratos.pratos:
-            produtos.append(prato)
-        return produtos
 
     @property
     def tela_produtos(self):

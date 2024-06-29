@@ -1,44 +1,120 @@
 #tela tudo ok
+import PySimpleGUI as sg
+
 
 class TelaClienteCpf():
     def __init__(self) -> None:
-        pass
+        self.__window = None
+
+    def open(self):
+        button, values = self.__window.Read()
+        return button, values
+    
+    def close(self):
+        self.__window.Close()
+
+    #funcionando
+    def init_opcoes(self):
+        sg.ChangeLookAndFeel('DarkTeal4')
+        layout = [
+            [sg.Text('-------- Cliente CPF ----------', font=("Helvica", 25))],
+            [sg.Text('Escolha sua opção', font=("Helvica", 15))],
+            [sg.Radio('Incluir cliente', "RD1", key='1')],
+            [sg.Radio('Alterar cliente', "RD1", key='2')],
+            [sg.Radio('Listar cliente', "RD1", key='3')],
+            [sg.Radio('Excluir cliente', "RD1", key='4')],
+            [sg.Radio('Retornar', "RD1", key='0')],
+            [sg.Button('Confirmar'), sg.Cancel('Cancelar')]
+        ]
+        self.__window = sg.Window('Sistema de clientes cpf').Layout(layout)
 
     def tela_opcoes(self) -> any:
-        print('-----Clientes cpf-----')
-        print('Opcoes:')
-        print('1) Incluir cliente')
-        print('2) Alterar cliente')
-        print('3) Listar cliente')
-        print('4) Excluir cliente')
-        print('0) Retornar')
-
-        opcao = input('Escolha uma opcao:')
-        return opcao
+        self.init_opcoes()
+        button, values = self.open()
+        if values['1']:
+            opcao = 1
+        if values['2']:
+            opcao = 2
+        if values['3']:
+            opcao = 3
+        if values['4']:
+            opcao = 4
+    # cobre os casos de Retornar, fechar janela, ou clicar cancelar
+    #Isso faz com que retornemos a tela do sistema caso qualquer uma dessas coisas aconteca
+        if values['0'] or button in (None, 'Cancelar'):
+            opcao = 0
+        self.close()
+        return opcao, button
    
-    def pega_dados_cliente_cpf(self):
-        print('-----Dados para cliente cpf-----')
-        nome = input('Nome: ')
-        celular = input('Celular: ')
-        email = input('Email: ')
-        cpf = input('cpf: ')
+    def pega_dados_cliente(self):
+        sg.ChangeLookAndFeel('DarkTeal4')
+        layout = [
+            [sg.Text('-------- DADOS CLIENTE CPF ----------', font=("Helvica", 25))],
+            [sg.Text('Nome:', size=(15, 1)), sg.InputText('', key='nome')],
+            [sg.Text('Celular:', size=(15, 1)), sg.InputText('', key='celular')],
+            [sg.Text('Email:', size=(15, 1)), sg.InputText('', key='email')],
+            [sg.Text('CPF:', size=(15, 1)), sg.InputText('', key='cpf')],
+            [sg.Text('Não use pontos, apenas os números', font=("Helvica", 15))],
+            [sg.Button('Confirmar'), sg.Cancel('Cancelar')]
+        ]
+        self.__window = sg.Window('Sistema de cliente cpf').Layout(layout)
+
+        button, values = self.open()
+        nome = values['nome']
+        celular = values['celular']
+        email = values['email']
+        cpf = values['cpf']
+
+        self.close()
 
         return {'nome':nome, 'celular':celular,
-                'email':email, 'cpf':cpf}
+                'email':email, 'cpf':cpf}, button
+    
+    def altera_dados_cliente(self):
+        sg.ChangeLookAndFeel('DarkTeal4')
+        layout = [
+            [sg.Text('-------- DADOS CLIENTE ----------', font=("Helvica", 25))],
+            [sg.Text('Nome:', size=(15, 1)), sg.InputText('', key='nome')],
+            [sg.Text('Celular:', size=(15, 1)), sg.InputText('', key='celular')],
+            [sg.Text('Email:', size=(15, 1)), sg.InputText('', key='email')],
+            [sg.Button('Confirmar'), sg.Cancel('Cancelar')]
+        ]
+        self.__window = sg.Window('Sistema de cliente cpf').Layout(layout)
+
+        button, values = self.open()
+        nome = values['nome']
+        celular = values['celular']
+        email = values['email']
+
+        self.close()
+
+        return {'nome':nome, 'celular':celular,
+                'email':email}, button
    
-    def seleciona_cliente_cpf(self):
-        cpf = input('Digite o cpf do cliente que quer selecionar: ')
-        return cpf
+    def seleciona_prato(self):
+        sg.ChangeLookAndFeel('DarkTeal4')
+        layout = [
+            [sg.Text('-------- SELECIONAR CLIENTE ----------', font=("Helvica", 25))],
+            [sg.Text('Digite o cpf do cliente que deseja selecionar:', font=("Helvica", 15))],
+            [sg.Text('CPF:', size=(15, 1)), sg.InputText('', key='cpf')],
+            [sg.Text('Não use pontos, apenas os números', font=("Helvica", 15))],
+            [sg.Button('Confirmar'), sg.Cancel('Cancelar')]
+        ]
+        self.__window = sg.Window('Seleciona cliente').Layout(layout)
 
-    def mostra_cliente_cpf(self, cliente):
-        print('Nome do(a) cliente: ', cliente.nome)
-        print('Celular do(a) cliente: ', cliente.contato.celular)
-        print('Email do(a) cliente: ', cliente.contato.email)
-        print('Cpf do(a) cliente: ', cliente.cpf)
-        print('\n')
+        button, values = self.open()
+        cpf = values['cpf']
+        self.close()
+        return cpf, button
 
-    def mostra_msg(self, mensagem):
-        print(mensagem)
+    def mostra_cliente(self, dados):
 
-    def espacamento(self):
-        print()
+        string_dados_cliente = 'Nome do cliente: ' + dados['nome'] + '\n'
+        string_dados_cliente = string_dados_cliente + 'Celular do cliente: ' + str(dados['celular']) + '\n'
+        string_dados_cliente = string_dados_cliente + 'Email do cliente: ' + str(dados['email']) + '\n'
+        string_dados_cliente = string_dados_cliente + 'CPF do cliente: ' + str(dados['cpf'])
+
+        sg.Popup("", string_dados_cliente)
+
+    def mostra_msg(self, msg):
+        sg.Popup("", msg)
