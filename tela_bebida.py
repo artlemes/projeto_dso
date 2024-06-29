@@ -65,8 +65,8 @@ class TelaBebida():
 
         self.close()
 
-        return {'nome':str(nome), 'preco':float(preco),
-                'despesa':float(despesa), 'codigo':int(codigo)}, button
+        return {'nome':nome, 'preco':preco,
+                'despesa':despesa, 'codigo':codigo}, button
     
     def altera_dados_bebida(self):
         sg.ChangeLookAndFeel('DarkTeal4')
@@ -86,8 +86,8 @@ class TelaBebida():
 
         self.close()
 
-        return {'nome':str(nome), 'preco':float(preco),
-                'despesa':float(despesa)}, button
+        return {'nome':nome, 'preco':preco,
+                'despesa':despesa}, button
    
     def seleciona_bebida(self):
         sg.ChangeLookAndFeel('DarkTeal4')

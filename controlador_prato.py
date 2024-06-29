@@ -1,6 +1,6 @@
 from prato import Prato
 from tela_prato import TelaPrato
-from prato_dao import PratoDAO
+from DAOs.prato_dao import PratoDAO
 
 class ControladorPrato():
     def __init__(self):
@@ -71,6 +71,7 @@ class ControladorPrato():
             return None
         
         certo, dados_alterados_tratados = self.testador_variaveis(dados_alterados)
+        print(dados_alterados_tratados)
 
         if certo:
             prato.nome = dados_alterados_tratados["nome"]

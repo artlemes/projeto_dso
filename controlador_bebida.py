@@ -1,10 +1,11 @@
 from bebida import Bebida
 from tela_bebida import TelaBebida
+from DAOs.bebida_dao import BebidaDAO
 
 class ControladorBebida():
     def __init__(self):
         self.__tela_bebida = TelaBebida()
-        self.__bebidas = []
+        self.__bebida_DAO = BebidaDAO()
 
     @property
     def bebidas(self):
@@ -18,29 +19,33 @@ class ControladorBebida():
     def inclui_bebida(self) -> bool:
         bebida_dados, botao = self.tela_bebida.pega_dados_bebida()
 
-        certo = self.testador_variaveis(bebida_dados)
+        certo, dados_tratados = self.testador_variaveis(bebida_dados)
 
         if botao == 'Cancelar':
             return None
 
         if not certo:
-            self.tela_bebida.mostra_msg('Não foi possivel cadastrar esta bebida:')
-            self.tela_bebida.mostra_msg('parâmetros inválidos')
+            self.tela_bebida.mostra_msg('Erro na captação de dados')
+            return False
 
         else:
             duplicado = False
 
-            novo = Bebida(bebida_dados["nome"], 
-                         bebida_dados["preco"], 
-                         bebida_dados["despesa"], 
-                         bebida_dados["codigo"])
+            novo = Bebida(dados_tratados["nome"], 
+                         dados_tratados["preco"], 
+                         dados_tratados["despesa"], 
+                         dados_tratados["codigo"])
 
-            for bebida in self.bebidas:
+            for bebida in self.__bebida_DAO.get_all():
+                print("procurando na lista")
                 if bebida.codigo == novo.codigo:
+                    print("bebida unico")
                     duplicado = True
             
             if not duplicado:
-                self.bebidas.append(novo)
+                self.__bebida_DAO.add(novo)
+                print(self.__bebida_DAO.get_all())
+                print("bebida adicionado")
                 return True
             
             else:
@@ -65,25 +70,23 @@ class ControladorBebida():
         #captação de dados
         dados_alterados, botao = self.tela_bebida.altera_dados_bebida()
 
-        print('conseguiu pegar os dados')
-        print(dados_alterados, botao)
-
         if botao == 'Cancelar':
-            print('o botao foi cancelar')
             return None
-        
-        print('testou o botao')
-        print(dados_alterados)
 
-        bebida.nome = dados_alterados["nome"]
-        print('alterou o nome')
-        bebida.preco = dados_alterados["preco"]
-        print("Alterou o preco")
-        bebida.despesa = dados_alterados["despesa"]
-        print("Alterou o preco")
-        bebida.codigo = bebida.codigo
-        print('Alterou os dados')
-        return True  
+        certo, dados_tratados = self.testador_variaveis(dados_alterados)
+        print(dados_tratados)
+        print(certo)
+
+        if certo:
+            bebida.nome = dados_tratados["nome"]
+            bebida.preco = dados_tratados["preco"]
+            bebida.despesa = dados_tratados["despesa"]
+            self.__bebida_DAO.update(bebida)
+            print('dados alterados com sucesso')
+        
+        else:
+            self.tela_bebida.mostra_msg('Erro na captação de dados')
+            return False
 
     #status: funcionando
     def exclui_bebida(self):
@@ -94,15 +97,15 @@ class ControladorBebida():
         if isinstance(bebida, str):
             return None
 
-        if bebida in self.bebidas:
-            self.bebidas.remove(bebida)
+        if bebida in self.__bebida_DAO.get_all():
+            self.__bebida_DAO.remove(int(bebida.codigo))
             self.tela_bebida.mostra_msg('bebida excluída')
         else:
             self.tela_bebida.mostra_msg("Atenção: bebida inexistente")
 
     #status: ainda não chequei
     def lista_bebida(self):
-        for bebida in self.bebidas:
+        for bebida in self.__bebida_DAO.get_all():
             self.tela_bebida.mostra_bebida({"nome": bebida.nome, "preco": bebida.preco, "despesa": bebida.despesa, "codigo": bebida.codigo})
 
     #status: funcionando
@@ -146,20 +149,33 @@ class ControladorBebida():
                 self.tela_bebida.mostra_msg("código deve ser um inteiro registrado\n")
         
 
-        for bebida in self.bebidas:
-            if bebida.codigo == cod:
+        for bebida in self.__bebida_DAO.get_all():
+            if int(bebida.codigo) == int(cod):
+                print('achou: ', bebida.nome)
                 return bebida
         
         return False
 
     
     def testador_variaveis(self, bebida_dados) -> dict:
-        try:
-            bebida_dados_checados = {"nome":str(bebida_dados["nome"]),
-                                    "preco": float(bebida_dados["preco"]),
-                                    "despesa":float(bebida_dados["despesa"]),
-                                    "codigo":int(bebida_dados["codigo"])}
-            return True
+
+        if len(bebida_dados) == 4:
+            try:
+                bebida_dados_checados = {"nome":str(bebida_dados["nome"]),
+                                         "preco": float(bebida_dados["preco"]),
+                                         "despesa":float(bebida_dados["despesa"]),
+                                         "codigo":int(bebida_dados["codigo"])}
+                return True, bebida_dados_checados
         
-        except:
-            return False
+            except:
+                return False, None
+            
+        else:
+            try:
+                bebida_dados_checados = {"nome":str(bebida_dados["nome"]),
+                                         "preco": float(bebida_dados["preco"]),
+                                         "despesa":float(bebida_dados["despesa"])}
+                return True, bebida_dados_checados
+        
+            except:
+                return False, None

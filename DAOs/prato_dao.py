@@ -1,4 +1,4 @@
-from dao import DAO
+from DAOs.dao import DAO
 from prato import Prato
 
 #cada entidade terá uma classe dessa, implementação bem simples.
