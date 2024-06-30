@@ -91,7 +91,7 @@ class TelaClienteCpf():
         return {'nome':nome, 'celular':celular,
                 'email':email}, button
    
-    def seleciona_prato(self):
+    def seleciona_cliente(self):
         sg.ChangeLookAndFeel('DarkTeal4')
         layout = [
             [sg.Text('-------- SELECIONAR CLIENTE ----------', font=("Helvica", 25))],
@@ -107,12 +107,12 @@ class TelaClienteCpf():
         self.close()
         return cpf, button
 
-    def mostra_cliente(self, dados):
+    def mostra_cliente(self, cliente):
 
-        string_dados_cliente = 'Nome do cliente: ' + dados['nome'] + '\n'
-        string_dados_cliente = string_dados_cliente + 'Celular do cliente: ' + str(dados['celular']) + '\n'
-        string_dados_cliente = string_dados_cliente + 'Email do cliente: ' + str(dados['email']) + '\n'
-        string_dados_cliente = string_dados_cliente + 'CPF do cliente: ' + str(dados['cpf'])
+        string_dados_cliente = 'Nome do cliente: ' + str(cliente.nome) + '\n'
+        string_dados_cliente = string_dados_cliente + 'Celular do cliente: ' + str(cliente.contato.celular) + '\n'
+        string_dados_cliente = string_dados_cliente + 'Email do cliente: ' + str(cliente.contato.email) + '\n'
+        string_dados_cliente = string_dados_cliente + 'CPF do cliente: ' + str(cliente.cpf)
 
         sg.Popup("", string_dados_cliente)
 

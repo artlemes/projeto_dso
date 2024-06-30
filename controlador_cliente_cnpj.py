@@ -8,14 +8,6 @@ class ControladorClienteCnpj():
         self.__tela_cliente_cnpj = TelaClienteCnpj()
         self.__cliente_DAO = ClienteCnpjDAO()
         self.__contato_DAO = ContatoDAO()
-
-    @property
-    def controlador_sistema(self):
-        return self.__controlador_sistema
-
-    @property
-    def clientes_cnpj(self):
-        return self.__clientes_cnpj
     
     @property
     def tela_cliente_cnpj(self):
@@ -115,8 +107,6 @@ class ControladorClienteCnpj():
         while continua:
             try:
                 op, botao = self.tela_cliente_cnpj.tela_opcoes()
-                print(op, botao)
-                print(type(op))
 
                 if op == 1:
                     self.incluir_cliente_cnpj()
