@@ -1,6 +1,6 @@
 from controlador_bebida import ControladorBebida
 from controlador_prato import ControladorPrato
-from tela_produto import TelaProduto
+from telas.tela_produto import TelaProduto
 from prato import Prato
 from bebida import Bebida
 

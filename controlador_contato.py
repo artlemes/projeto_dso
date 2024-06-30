@@ -1,5 +1,5 @@
 from contato import Contato
-from tela_contato import TelaContato
+from telas.tela_contato import TelaContato
 from DAOs.contato_dao import ContatoDAO
 
 class ControladorContato():

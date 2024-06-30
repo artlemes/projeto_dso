@@ -1,5 +1,5 @@
 from garçon import Garçon
-from tela_garçon import TelaGarçon
+from telas.tela_garçon import TelaGarçon
 from controlador_mesa import ControladorMesa
 
 

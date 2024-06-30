@@ -1,4 +1,4 @@
-from tela_sistema import TelaSistema
+from telas.tela_sistema import TelaSistema
 from controlador_produto import ControladorProduto
 from controlador_cliente import ControladorCliente
 from controlador_contato import ControladorContato

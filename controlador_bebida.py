@@ -1,5 +1,5 @@
 from bebida import Bebida
-from tela_bebida import TelaBebida
+from telas.tela_bebida import TelaBebida
 from DAOs.bebida_dao import BebidaDAO
 
 class ControladorBebida():

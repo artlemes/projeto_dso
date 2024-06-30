@@ -1,5 +1,5 @@
 from prato import Prato
-from tela_prato import TelaPrato
+from telas.tela_prato import TelaPrato
 from DAOs.prato_dao import PratoDAO
 
 class ControladorPrato():

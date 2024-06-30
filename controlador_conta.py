@@ -1,4 +1,4 @@
-from tela_conta import TelaConta
+from telas.tela_conta import TelaConta
 from conta import Conta
 from prato import Prato
 from bebida import Bebida

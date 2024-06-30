@@ -1,5 +1,5 @@
 from cliente_cpf import ClienteCpf
-from tela_cliente_cpf import TelaClienteCpf
+from telas.tela_cliente_cpf import TelaClienteCpf
 from DAOs.cliente_cpf_dao import ClienteCpfDAO
 from DAOs.contato_dao import ContatoDAO
 

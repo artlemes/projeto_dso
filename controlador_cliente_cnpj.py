@@ -1,5 +1,5 @@
 from cliente_cnpj import ClienteCnpj
-from tela_cliente_cnpj import TelaClienteCnpj
+from telas.tela_cliente_cnpj import TelaClienteCnpj
 from DAOs.cliente_cnpj_dao import ClienteCnpjDAO
 from DAOs.contato_dao import ContatoDAO
 

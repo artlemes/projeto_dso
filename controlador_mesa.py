@@ -1,4 +1,4 @@
-from tela_mesa import TelaMesa
+from telas.tela_mesa import TelaMesa
 from mesa import Mesa
 from controlador_conta import ControladorConta
 
