@@ -129,16 +129,17 @@ class TelaGarçon():
 
     def mostra_garçon(self, dados, atendendo):
 
-        string_dados = 'Nome do garçon: ' + str(dados['nome']) + '\n'
-        string_dados = string_dados + 'Celular do garçon: ' + str(dados['celular']) + '\n'
-        string_dados = string_dados + 'Email do garçon: ' + str(dados['email']) + '\n'
-        string_dados = string_dados + 'CPF do garçon: ' + str(dados['cpf'])
+        if not atendendo:
+            string_dados = 'Nome do garçon: ' + str(dados['nome']) + '\n'
+            string_dados = string_dados + 'Celular do garçon: ' + str(dados['celular']) + '\n'
+            string_dados = string_dados + 'Email do garçon: ' + str(dados['email']) + '\n'
+            string_dados = string_dados + 'CPF do garçon: ' + str(dados['cpf'])
+            sg.Popup("", string_dados)
 
-        if atendendo:
-            mesas = dados['mesas']
-            string_dados = string_dados + 'O garçon está atendendo estas mesas: ' + str(mesas)
-
-        sg.Popup("", string_dados)
+        else:
+            string_dados = string_dados + 'O garçon está atendendo estas mesas: \n'
+            sg.Popup("", string_dados, dados['mesas'])
+        
 
 
     def mostra_msg(self, mensagem):
