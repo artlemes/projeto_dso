@@ -140,7 +140,8 @@ class TelaGarçon():
             string_dados = string_dados + 'O garçon está atendendo estas mesas: \n'
             sg.Popup("", string_dados, dados['mesas'])
         
-
+    def mostra_mesas(mesas):
+        sg.Popup('Este garçon está atendendo essas mesas: ', mesas)
 
     def mostra_msg(self, mensagem):
         sg.Popup("", mensagem)

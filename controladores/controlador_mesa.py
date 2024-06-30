@@ -1,6 +1,6 @@
 from telas.tela_mesa import TelaMesa
 from mesa import Mesa
-from controlador_conta import ControladorConta
+from controladores.controlador_conta import ControladorConta
 
 class ControladorMesa():
 

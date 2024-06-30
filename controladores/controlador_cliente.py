@@ -1,5 +1,5 @@
-from controlador_cliente_cnpj import ControladorClienteCnpj
-from controlador_cliente_cpf import ControladorClienteCpf
+from controladores.controlador_cliente_cnpj import ControladorClienteCnpj
+from controladores.controlador_cliente_cpf import ControladorClienteCpf
 from telas.tela_cliente import TelaCliente
 from cliente_cpf import ClienteCpf
 from cliente_cnpj import ClienteCnpj

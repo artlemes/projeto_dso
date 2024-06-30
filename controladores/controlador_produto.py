@@ -1,5 +1,5 @@
-from controlador_bebida import ControladorBebida
-from controlador_prato import ControladorPrato
+from controladores.controlador_bebida import ControladorBebida
+from controladores.controlador_prato import ControladorPrato
 from telas.tela_produto import TelaProduto
 from prato import Prato
 from bebida import Bebida

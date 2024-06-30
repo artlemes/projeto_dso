@@ -2,7 +2,7 @@ from DAOs.dao import DAO
 from garçon import Garçon
 
 #cada entidade terá uma classe dessa, implementação bem simples.
-class garçonDAO(DAO):
+class GarçonDAO(DAO):
     def __init__(self):
         super().__init__('garçons.pkl')
 

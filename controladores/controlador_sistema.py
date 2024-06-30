@@ -1,9 +1,9 @@
 from telas.tela_sistema import TelaSistema
-from controlador_produto import ControladorProduto
-from controlador_cliente import ControladorCliente
-from controlador_contato import ControladorContato
-from controlador_garçon import ControladorGarçon
-from controlador_mesa import ControladorMesa
+from controladores.controlador_produto import ControladorProduto
+from controladores.controlador_cliente import ControladorCliente
+from controladores.controlador_contato import ControladorContato
+from controladores.controlador_garçon import ControladorGarçon
+from controladores.controlador_mesa import ControladorMesa
 
 class ControladorSistema:
 

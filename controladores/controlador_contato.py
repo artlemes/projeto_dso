@@ -105,6 +105,7 @@ class ControladorContato():
     #status: feito, testar
     def lista_contato(self):
         for contato in self.__contato_DAO.get_all():
+            print(contato.celular)
             self.tela_contato.mostra_contato({"celular": contato.celular, "email": contato.email})
 
     #status: feita, testar
