@@ -38,8 +38,6 @@ class TelaBebida():
             opcao = 3
         if values['4']:
             opcao = 4
-    # cobre os casos de Retornar, fechar janela, ou clicar cancelar
-    #Isso faz com que retornemos a tela do sistema caso qualquer uma dessas coisas aconteca
         if values['0'] or button in (None, 'Cancelar'):
             opcao = 0
         self.close()

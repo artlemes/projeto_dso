@@ -1,21 +1,23 @@
 from telas.tela_mesa import TelaMesa
 from mesa import Mesa
 from controladores.controlador_conta import ControladorConta
+from DAOs.mesa_dao import MesaDAO
 
 class ControladorMesa():
 
     def __init__(self, controlador_sistema):
         self.__tela_mesa = TelaMesa()
+        self.__controlador_conta = ControladorConta(controlador_sistema)
+        self.__mesa_DAO = MesaDAO()
         self.__controlador_sistema = controlador_sistema
-        self.__mesas = []
 
     @property
     def controlador_sistema(self):
         return self.__controlador_sistema
 
     @property
-    def mesas(self):
-        return self.__mesas
+    def controlador_conta(self):
+        return self.__controlador_conta
 
     @property
     def tela_mesa(self):
@@ -23,30 +25,43 @@ class ControladorMesa():
     
     #metodo para acessar contas pagas do controlador de uma mesa, sem ter que digitar aquela linha gigante
     def contas_pagas(self, mesa) -> list:
-        return mesa.controlador_conta.contas_pagas
+        return self.controlador_conta.contas_pagas
 
     #status: feito, testar   
     def criar_mesa(self) -> bool:
-        num_mesas = len(self.mesas)
+        print('Entrou em criar mesa')
+        num_mesas = len(self.__mesa_DAO.get_all())
 
-        nova_mesa = Mesa(num_mesas + 1, ControladorConta(self.controlador_sistema))
+        print(num_mesas)
 
-        self.mesas.append(nova_mesa)
+        novo_num = num_mesas + 1
+
+        #que bomba é essa meu deus maluco burro da porra
+        nova_mesa = Mesa(novo_num)
+
+        print('numero da nova mesa: ', nova_mesa.numero_da_mesa)
+
+        self.__mesa_DAO.add(nova_mesa)
 
         self.tela_mesa.mostra_msg("mesa criada com sucesso")
 
-    
     #status: feito
     def excluir_mesa(self):
+
+        self.listar_mesa()
+
         mesa = self.acha_mesa_by_num()
 
-        if mesa in self.mesas:
-            self.mesas.remove(mesa)
-            self.tela_mesa.mostra_msg('Mesa excluída')
+        if mesa == None:
+            return None
+
+        self.__mesa_DAO.remove(mesa.numero_da_mesa)
+        self.tela_mesa.mostra_msg('Mesa excluída')
 
     #status: feito
     def listar_mesa(self):
-        for mesa in self.mesas:
+        print('entrou em listar mesas')
+        for mesa in self.__mesa_DAO.get_all():
             self.tela_mesa.mostra_mesa(mesa)
 
     #status: feito
@@ -54,7 +69,8 @@ class ControladorMesa():
         continua = True
         while continua:
             try:
-                op = int(self.tela_mesa.tela_opcoes())
+                op, botao = self.tela_mesa.tela_opcoes()
+
                 if op == 1:
                     self.criar_mesa()
                 elif op == 2:
@@ -63,12 +79,11 @@ class ControladorMesa():
                     self.abre_opcoes_alteracoes()
                 elif op == 4:
                     self.excluir_mesa()
-                elif op == 0:
+                elif op == 0 or botao == 'Cancelar':
                     continua = False
-                else: 
-                    self.tela_mesa.mostra_msg("opção inválida")
+        
             except:
-                self.tela_mesa.mostra_msg("opção não é um inteiro")
+                self.tela_mesa.mostra_msg("Selecione uma opção ou retorne")
 
     #status: feito
     def abre_opcoes_alteracoes(self):
@@ -76,41 +91,54 @@ class ControladorMesa():
         mesa = self.acha_mesa_by_num()
         #se a mesa não existir, retorna vazio
         if mesa == None:
-            return
+            return None
         else:
             continua = True
             while continua:
                 try:
-                    op = int(self.tela_mesa.tela_opcoes_alteraçoes(mesa))
+                    op, botao = self.tela_mesa.tela_opcoes_alteraçoes(mesa)
+
                     if op == 1:
                         #altera garçon da mesa mesmo que nulo e encerra o anterior
                         self.alterar_garçon(mesa)
                     elif op == 2:
                         #abre controlador da mesa
-                        mesa.controlador_conta.abre_tela_inicial()
+                        self.controlador_conta.abre_tela_inicial()
                     elif op == 3:
                         #encerra turno de garçon na mesa
                         self.encerrar_turno_garçon(mesa)
-                    elif op == 0:
+                    elif op == 0 or botao == 'Cancelar':
                         continua = False
-                    else: 
-                        self.tela_mesa.mostra_msg("opção inválida")
+                    
                 except:
-                    self.tela_mesa.mostra_msg("opção não é um inteiro")
+                    self.tela_mesa.mostra_msg("Selecione uma opção ou retorne")
 
     #status: feito
     def acha_mesa_by_num(self):
-        self.listar_mesa()
-        try:
-            #recebe input e procura para retornar mesa
-            num = int(self.tela_mesa.seleciona_mesa())
-            for mesa in self.mesas:
-                if mesa.numero_da_mesa == num:
-                    return mesa
-        except:
-            self.tela_mesa.mostra_msg('Não existe uma mesa com este numero')
-            return
 
+        num, botao = self.tela_mesa.seleciona_mesa()
+
+        if botao == 'Cancelar':
+            return None
+
+        try:
+            int(num)
+        except:
+            self.tela_mesa.mostra_msg('Digite apenas números')
+            return None
+        
+        numero_int = int(num)
+
+        print('proxima coisa é procurar')
+
+        for mesa in self.__mesa_DAO.get_all():
+                if mesa.numero_da_mesa == numero_int:
+                    print('Achou a mesa')
+                    return mesa
+        
+        self.tela_mesa.mostra_msg('Não existe uma mesa com este número')
+        return None
+                
     def acha_garçon_by_cpf(self):
         #usa controlador sistema para utilizar do controlador de garçons geral para exibir lista de garçons
         self.controlador_sistema.controlador_garçon.lista_garçon()

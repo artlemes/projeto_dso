@@ -1,17 +1,14 @@
+from conta import Conta
 
 
 class Mesa():
 
-    def __init__(self, numero_da_mesa, controlador_conta):
+    def __init__(self, numero_da_mesa):
         self.__garçon = None
         self.__numero_da_mesa = numero_da_mesa
-        self.__controlador_conta = controlador_conta
+        self.__contas = []
         self.__registro = []
-
-    @property
-    def controlador_conta(self):
-        return self.__controlador_conta
-    
+ 
     @property
     def garçon(self):
         return self.__garçon
@@ -30,7 +27,15 @@ class Mesa():
 
     @property
     def contas(self):
-        return self.controlador_conta.contas
+        return self.__contas
+    
+    def add_conta(self, conta):
+        if isinstance(conta, Conta):
+            self.contas.append(conta)
+
+    def remove_conta(self, conta):
+        if isinstance(conta, Conta) and conta in self.contas:
+            self.contas.remove(conta)
     
     @property
     def registro(self):

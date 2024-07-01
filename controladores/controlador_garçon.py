@@ -1,7 +1,7 @@
 from garçon import Garçon
 from telas.tela_garçon import TelaGarçon
 from controladores.controlador_mesa import ControladorMesa
-from DAOs.garçon_DAO import GarçonDAO
+from DAOs.garçon_dao import GarçonDAO
 from DAOs.contato_dao import ContatoDAO
 
 
