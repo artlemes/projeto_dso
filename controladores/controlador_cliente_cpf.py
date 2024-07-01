@@ -2,6 +2,10 @@ from cliente_cpf import ClienteCpf
 from telas.tela_cliente_cpf import TelaClienteCpf
 from DAOs.cliente_cpf_dao import ClienteCpfDAO
 from DAOs.contato_dao import ContatoDAO
+from dados_insuficientes_excecao import DadosInsuficientesException
+from codigo_caracteres_insuficientes import CodigoSemCaracteresMinimosException
+
+
 
 class ControladorClienteCpf():
     def __init__(self, controlador_sistema):
@@ -19,8 +23,16 @@ class ControladorClienteCpf():
 
         if botao == 'Cancelar':
             return None
-
-        certo = self.testador_variaveis(dados)
+        
+        try:
+            certo = self.testador_variaveis(dados)
+        except DadosInsuficientesException as e:
+            self.tela_cliente_cpf.mostra_msg(e)
+            return None
+        except CodigoSemCaracteresMinimosException as e:
+            self.tela_cliente_cpf.mostra_msg(e)
+            return None
+        
 
         if not certo:
             self.tela_cliente_cpf.mostra_msg('Não foi possivel cadastrar esta cliente:')
@@ -65,7 +77,11 @@ class ControladorClienteCpf():
             return None
 
         #booleano de captação bem sucedida
-        certo = self.testador_variaveis(dados_alterados)
+        try:
+            certo = self.testador_variaveis(dados_alterados)
+        except DadosInsuficientesException as e:
+            self.tela_cliente_cpf.mostra_msg(e)
+            return None
 
         if certo:
             cliente.nome = dados_alterados["nome"]
@@ -141,8 +157,12 @@ class ControladorClienteCpf():
     #serve de algo?
     def testador_variaveis(self, dados) -> bool:
         if len(dados) == 4:
-            if len(dados['cpf']) != 11 or dados['nome'] == '' or dados['celular'] == '' or dados['email'] == '':
-                return False
+
+            if len(dados['cpf']) != 11:
+                raise CodigoSemCaracteresMinimosException
+            
+            elif dados['nome'] == '' or dados['celular'] == '' or dados['email'] == '':
+                raise DadosInsuficientesException
             else:
                 try:
                     int(dados['cpf'])
@@ -153,6 +173,6 @@ class ControladorClienteCpf():
                 return True
         else:
             if dados['nome'] == '' or dados['celular'] == '' or dados['email'] == '':
-                return False
+                raise DadosInsuficientesException
             else:
                 return True

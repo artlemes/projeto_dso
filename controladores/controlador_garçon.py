@@ -3,6 +3,9 @@ from telas.tela_garçon import TelaGarçon
 from controladores.controlador_mesa import ControladorMesa
 from DAOs.garçon_dao import GarçonDAO
 from DAOs.contato_dao import ContatoDAO
+from dados_insuficientes_excecao import DadosInsuficientesException
+from codigo_caracteres_insuficientes import CodigoSemCaracteresMinimosException
+
 
 
 class ControladorGarçon():
@@ -23,7 +26,14 @@ class ControladorGarçon():
         if botao == 'Cancelar':
             return None
 
-        certo = self.testador_variaveis(garçon_dados)
+        try:
+            certo = self.testador_variaveis(garçon_dados)
+        except DadosInsuficientesException as e:
+            self.tela_garçon.mostra_msg(e)
+            return None
+        except CodigoSemCaracteresMinimosException as e:
+            self.tela_garçon.mostra_msg(e)
+            return None
 
         if not certo:
             self.tela_garçon.mostra_msg('Não foi possivel cadastrar este garçon:')
@@ -72,7 +82,11 @@ class ControladorGarçon():
             return None
 
         #booleano de captação bem sucedida
-        certo = self.testador_variaveis(dados_alterados)
+        try:
+            certo = self.testador_variaveis(dados_alterados)
+        except DadosInsuficientesException as e:
+            self.tela_garçon.mostra_msg(e)
+            return None
 
         if certo:
             garçon.nome = dados_alterados["nome"]
@@ -222,9 +236,13 @@ class ControladorGarçon():
     #se der certo retorna true, se der errado false
     def testador_variaveis(self, dados) -> dict:
         if len(dados) == 4:
-            if len(dados['cpf']) != 11 or dados['nome'] == '' or dados['celular'] == '' or dados['email'] == '':
-                self.tela_garçon.mostra_msg("É necessário preencher todos os campos")
-                return False
+
+            if len(dados['cpf']) != 11: 
+                raise CodigoSemCaracteresMinimosException
+            
+            elif dados['nome'] == '' or dados['celular'] == '' or dados['email'] == '':
+                raise DadosInsuficientesException
+            
             else:
                 try:
                     int(dados['cpf'])
@@ -235,7 +253,6 @@ class ControladorGarçon():
                 return True
         else:
             if dados['nome'] == '' or dados['celular'] == '' or dados['email'] == '':
-                self.tela_garçon.mostra_msg("É necessário preencher todos os campos")
-                return False
+                raise DadosInsuficientesException
             else:
                 return True

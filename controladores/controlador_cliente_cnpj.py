@@ -2,6 +2,10 @@ from cliente_cnpj import ClienteCnpj
 from telas.tela_cliente_cnpj import TelaClienteCnpj
 from DAOs.cliente_cnpj_dao import ClienteCnpjDAO
 from DAOs.contato_dao import ContatoDAO
+from dados_insuficientes_excecao import DadosInsuficientesException
+from codigo_caracteres_insuficientes import CodigoSemCaracteresMinimosException
+
+
 
 class ControladorClienteCnpj():
     def __init__(self, controlador_sistema):
@@ -20,7 +24,14 @@ class ControladorClienteCnpj():
         if botao == 'Cancelar':
             return None
 
-        certo = self.testador_variaveis(dados)
+        try:
+            certo = self.testador_variaveis(dados)
+        except DadosInsuficientesException as e:
+            self.tela_cliente_cnpj.mostra_msg(e)
+            return None
+        except CodigoSemCaracteresMinimosException as e:
+            self.tela_cliente_cnpj.mostra_msg(e)
+            return None
 
         if not certo:
             self.tela_cliente_cnpj.mostra_msg('Não foi possivel cadastrar esta cliente:')
@@ -65,8 +76,11 @@ class ControladorClienteCnpj():
             return None
 
         #booleano de captação bem sucedida
-        certo = self.testador_variaveis(dados_alterados)
-        print(certo)
+        try:
+            certo = self.testador_variaveis(dados_alterados)
+        except DadosInsuficientesException as e:
+            self.tela_cliente_cnpj.mostra_msg(e)
+            return None
 
         if certo:
             cliente.nome = dados_alterados["nome"]
@@ -142,8 +156,13 @@ class ControladorClienteCnpj():
     #serve de algo?
     def testador_variaveis(self, dados) -> bool:
         if len(dados) == 4:
-            if len(dados['cnpj']) != 14 or dados['nome'] == '' or dados['celular'] == '' or dados['email'] == '':
-                return False
+            
+            if len(dados['cnpj']) != 14:
+                raise CodigoSemCaracteresMinimosException
+            
+            elif dados['nome'] == '' or dados['celular'] == '' or dados['email'] == '':
+                raise DadosInsuficientesException
+            
             else:
                 try:
                     int(dados['cnpj'])
@@ -151,9 +170,10 @@ class ControladorClienteCnpj():
                 except:
                     self.tela_cliente_cnpj.mostra_msg('Celular e CNPJ devem conter apenas números')
                     return False
+                
                 return True
         else:
             if dados['nome'] == '' or dados['celular'] == '' or dados['email'] == '':
-                return False
+                raise DadosInsuficientesException
             else:
                 return True
