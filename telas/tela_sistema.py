@@ -22,6 +22,7 @@ class TelaSistema():
             [sg.Radio('Garçons', "RD1", key='3')],
             [sg.Radio('Mesas', "RD1", key='4')],
             [sg.Radio('Clientes', "RD1", key='5')],
+            [sg.Radio('Contas', "RD1", key='6')],
             [sg.Radio('Desligar o sistema', "RD1", key='0')],
             [sg.Button('Confirmar'), sg.Cancel('Cancelar')]
         ]
@@ -41,6 +42,8 @@ class TelaSistema():
             opcao = 4
         if values['5']:
             opcao = 5
+        if values['6']:
+            opcao = 6
     # cobre os casos de Retornar, fechar janela, ou clicar cancelar
     #Isso faz com que retornemos a tela do sistema caso qualquer uma dessas coisas aconteca
         if values['0'] or button in (None, 'Cancelar'):

@@ -16,6 +16,10 @@ class ControladorClienteCpf():
     @property
     def tela_cliente_cpf(self):
         return self.__tela_cliente_cpf
+    
+    @property
+    def cliente_DAO(self):
+        return self.__cliente_DAO
 
     #status: funcionando
     def incluir_cliente_cpf(self) -> bool:

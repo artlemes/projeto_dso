@@ -170,17 +170,14 @@ class TelaConta():
         sg.ChangeLookAndFeel('DarkTeal4')
         layout = [
             [sg.Text('-------- SELECIONAR CLIENTE ----------', font=("Helvica", 25))],
-            [sg.Text('Digite o cpf ou cnpj do cliente que deseja selecionar:', font=("Helvica", 15))],
-            [sg.Text('Código:', size=(15, 1)), sg.InputText('', key='cod')],
-            [sg.Text('Utilize apenas números', font=("Helvica", 15))],
-            [sg.Button('Confirmar'), sg.Cancel('Cancelar')]
+            [sg.Text('Cliente CPF ou Cliente CNPJ?', font=("Helvica", 15))],
+            [sg.Button('CPF'), sg.Cancel('CNPJ')]
         ]
         self.__window = sg.Window('Seleciona cliente').Layout(layout)
 
-        button, values = self.open()
-        cod = values['cod']
+        button = self.open()
         self.close()
-        return cod, button
+        return button
     
     def cadastro_cliente(self):
         sg.ChangeLookAndFeel('DarkTeal4')

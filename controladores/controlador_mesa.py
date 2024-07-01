@@ -71,14 +71,17 @@ class ControladorMesa():
             try:
                 op, botao = self.tela_mesa.tela_opcoes()
 
-                if op == 1:
-                    self.criar_mesa()
-                elif op == 2:
-                    self.listar_mesa()
-                elif op == 3:
-                    self.abre_opcoes_alteracoes()
-                elif op == 4:
-                    self.excluir_mesa()
+                if 0 < op and op <= 4:
+                    continua = False
+                    self.abre_tela_inicial()
+                #if op == 1:
+                    #self.criar_mesa()
+                #elif op == 2:
+                    #self.listar_mesa()
+                #elif op == 3:
+                    #self.abre_opcoes_alteracoes()
+                #elif op == 4:
+                    #self.excluir_mesa()
                 elif op == 0 or botao == 'Cancelar':
                     continua = False
         

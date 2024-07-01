@@ -80,7 +80,6 @@ class ControladorContato():
         if certo:
             contato.celular = dados_alterados['celular']
             contato.email = dados_alterados['email']
-            print('dados mudaram, erro no dao')
             self.__contato_DAO.update(contato)
             self.tela_contato.mostra_msg('Contato alterado com sucesso')
 
@@ -105,7 +104,6 @@ class ControladorContato():
     #status: feito, testar
     def lista_contato(self):
         for contato in self.__contato_DAO.get_all():
-            print(contato.celular)
             self.tela_contato.mostra_contato({"celular": contato.celular, "email": contato.email})
 
     #status: feita, testar
@@ -150,13 +148,10 @@ class ControladorContato():
     def testador_variaveis(self, contato_dados) -> dict:
         try:
             int(contato_dados['celular'])
-            print('funcionou')
 
             if contato_dados['email'] == '':
                 return False
             
             return True
         except:
-            print('erro')
-
-        return False
+            return False

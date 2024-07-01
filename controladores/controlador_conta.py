@@ -3,6 +3,7 @@ from conta import Conta
 from prato import Prato
 from bebida import Bebida
 from DAOs.conta_dao import ContaDAO
+from codigo_caracteres_insuficientes import CodigoSemCaracteresMinimosException
 
 class ControladorConta():
     def __init__(self, controlador_sistema):
@@ -39,22 +40,25 @@ class ControladorConta():
         cod_int = int(cod)
         
         #testando se o codigo está em uma conta ativa
-        for conta in self.contas:
+        for conta in self.contas_ativas:
             if conta.codigo_conta == cod_int:
-                print("codigo já existente em contas ativas")
+                self.tela_conta.mostra_msg("codigo já existente em contas ativas")
                 return None
 
         #testando se o codigo está em uma conta paga
         for conta in self.__conta_DAO.get_all():
             if conta.codigo_conta == cod_int:
-                print("codigo já existente em contas pagas")
+                self.tela_conta.mostra_msg("codigo já existente em contas pagas")
                 return None
+        
+        
+        conta_nova = Conta(cod_int)
             
-        self.contas.append(Conta(cod_int))
+        self.contas_ativas.append(conta_nova)
         return True
 
     def listar_contas_ativas(self):
-        for conta in self.contas:
+        for conta in self.contas_ativas:
             self.tela_conta.mostra_conta(conta)
 
 
@@ -72,7 +76,7 @@ class ControladorConta():
 
         cod_int = int(cod)
             
-        for conta in self.contas:
+        for conta in self.contas_ativas:
             if conta.codigo_conta == cod_int:
                 return conta
         
@@ -121,12 +125,18 @@ class ControladorConta():
 
                 if op == 1:
                     prato = self.controlador_sistema.controlador_produto.controlador_pratos.acha_prato_by_cod()
-                    conta.produtos.remove(prato)
+                    if prato in conta.produtos:
+                        conta.produtos.remove(prato)
+                    else:
+                        self.tela_conta.mostra_msg('O produto não está na conta')
 
                 if op == 2:
                     self.listar_produtos
                     bebida = self.controlador_sistema.controlador_produto.controlador_bebidas.acha_bebida_by_cod()
-                    conta.produtos.remove(bebida)
+                    if bebida in conta.produtos:
+                        conta.produtos.remove(bebida)
+                    else:
+                        self.tela_conta.mostra_msg('O produto não está na conta')
 
                 if op == 0 or botao == 'Cancelar':
                     continua = False
@@ -136,24 +146,31 @@ class ControladorConta():
 
     def pagar_conta(self, conta: Conta):
             
-            cadastro = self.tela_conta.cadastro_cliente()
+            cadastro, nada = self.tela_conta.cadastro_cliente()
 
             if cadastro == 'Sim':
                 
                 #a busca funciona
-                cliente = self.acha_cliente()
+                try:
+                    cliente = self.acha_cliente()
+                except CodigoSemCaracteresMinimosException as e:
+                    self.tela_conta.mostra_msg(e)
+                    return None
+
+                print(cliente.nome)
 
                 #funciona
                 if cliente is not None:
                     conta.cliente = cliente
+                    print('cliente associado a conta')
                 else:
                     self.tela_conta.mostra_msg("Cliente não encontrado")
                     return False
 
             try:
-                self.__conta_DAO.add(conta)
                 conta.pago = True
-                self.contas.remove(conta)
+                self.__conta_DAO.add(conta)
+                self.contas_ativas.remove(conta)
                 self.tela_conta.mostra_msg("fechamento bem sucedido")
                 return True
             
@@ -164,29 +181,15 @@ class ControladorConta():
     #essa funcao acha o cliente independente se é cpf ou cnpj
     def acha_cliente(self):
 
-        cod_cliente, botao = self.tela_conta.seleciona_cliente()
+        tipo_cliente, nada = self.tela_conta.seleciona_cliente()
 
-        if botao == 'Cancelar':
-            return None
+        if tipo_cliente == 'CPF':
+            cliente = self.controlador_sistema.controlador_cliente.controlador_cliente_cpf.acha_cliente_by_cpf()
+            return cliente
 
-        try:
-            int(cod_cliente)
-        except:
-            self.tela_conta.mostra_msg('O código deve conter apenas números')
-
-        cod_str = str(cod_cliente)
-
-        if len(cod_str) == 11:
-            for cliente in self.controlador_sistema.controlador_cliente.controlador_cliente_cpf.__cliente_DAO.get_all():
-                if cliente.cpf == cod_str:
-                    return cliente
-        else:
-            for cliente in self.controlador_sistema.controlador_cliente.controlador_cliente_cnpj.__cliente_DAO.get_all():
-                if cliente.cnpj == cod_str:
-                    return cliente
-        
-        self.tela_conta.mostra_msg('Cliente não tem registro')
-        return None
+        if tipo_cliente == 'CNPJ':
+            cliente = self.controlador_sistema.controlador_cliente.controlador_cliente_cnpj.acha_cliente_by_cnpj()
+            return cliente
 
     def listar_contas_pagas(self):
         for conta in self.__conta_DAO.get_all():
@@ -196,11 +199,6 @@ class ControladorConta():
 
         self.listar_contas_ativas()
 
-        cod, botao = self.tela_conta.selecionar_conta()
-
-        if botao == 'Cancelar':
-            return None
-
         try:
             conta = self.encontrar_conta_ativa()
 
@@ -208,7 +206,7 @@ class ControladorConta():
                 self.tela_conta.mostra_msg("codigo inexistente")
 
             else:
-                self.contas.remove(conta)
+                self.contas_ativas.remove(conta)
 
         except:
             self.tela_conta.mostra_msg("dado coletado não foi um inteiro")

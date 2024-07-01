@@ -16,6 +16,10 @@ class ControladorClienteCnpj():
     @property
     def tela_cliente_cnpj(self):
         return self.__tela_cliente_cnpj
+    
+    @property
+    def cliente_DAO(self):
+        return self.__cliente_DAO
 
     #status: funcionando
     def incluir_cliente_cnpj(self) -> bool:
